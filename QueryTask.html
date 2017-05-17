@@ -8,8 +8,8 @@
   #viewDiv {
     padding: 0;
     margin: 0;
-    height: 400px;
-    width: 600px;
+    height: 600px;
+    width: 800px;
   }
 </style>
 <link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css">
@@ -21,8 +21,9 @@ require([
   "esri/tasks/QueryTask",
   "esri/tasks/support/Query",
   "esri/layers/GraphicsLayer",
+  "dojo/_base/array",
   "dojo/domReady!"
-], function(Map, MapView, QueryTask, Query, GraphicsLayer){
+], function(Map, MapView, QueryTask, Query, GraphicsLayer, arrayUtils){
 
   // URL to feature service containing points 
   var pstnUrl = "http://gis2.leeds.gov.uk/arcgis/rest/services/Public/Polling/FeatureServer/2"
@@ -37,6 +38,26 @@ require([
     returnGeometry: true,
     outFields: ["*"]
   });
+
+  params.where = "POLL_ST_NO = 238"
+
+  pstnTask.execute(params)
+  .then(getResults)
+  .otherwise(promiseRejected);
+
+    function getResults(response) {
+
+    // Loop through each of the results 
+    var peakResults = arrayUtils.map(response.features, function (feature) {
+      return feature;
+    });
+
+    resultsLyr.addMany(peakResults);
+  }
+
+      function promiseRejected(err) {
+      console.error("Promise rejected: ", err.message);
+    }
       
   var map = new Map({
     basemap: "streets"
