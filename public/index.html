@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Get started with MapView - Create a 2D map</title>
+<style>
+  #viewDiv {
+    padding: 0;
+    margin: 0;
+    height: 400px;
+    width: 600px;
+  }
+</style>
+<link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css">
+<script src="https://js.arcgis.com/4.3/"></script>
+<script>
+require([
+  "esri/Map",
+  "esri/views/MapView",
+      "esri/layers/GraphicsLayer",
+  "esri/symbols/SimpleMarkerSymbol",
+  "esri/geometry/Point",
+  "esri/Graphic",
+  "dojo/domReady!"
+], function(Map, MapView, GraphicsLayer, SimpleMarkerSymbol, Point, Graphic){
+  var map = new Map({
+    basemap: "streets"
+  });
+
+    var view = new MapView({
+    container: "viewDiv",  // Reference to the scene div created in step 5
+    map: map,  // Reference to the map object created before the scene
+    zoom: 17,  // Sets the zoom level based on level of detail (LOD)
+    center: [-1.6182250, 53.8254300]  // Sets the center point of view in lon/lat
+  });
+
+        // First create a point geometry (this is the location of the Titanic)
+      var point = new Point({
+        longitude: -1.6182250,
+        latitude: 53.8254300
+      });
+
+     // Create a symbol for drawing the point
+      var markerSymbol = new SimpleMarkerSymbol({
+        color: [226, 119, 40],
+        outline: { // autocasts as new SimpleLineSymbol()
+          color: [255, 255, 255],
+          width: 2
+        }
+      });
+
+      // Create a graphic and add the geometry and symbol to it
+      var pointGraphic = new Graphic({
+        geometry: point,
+        symbol: markerSymbol
+      });
+    
+    view.graphics.addMany([pointGraphic])
+
+});
+</script>
+</head>
+<body>
+    https://developers.arcgis.com/javascript/latest/sample-code/sandbox/index.html?sample=get-started-graphics
+  <div id="viewDiv">map goes here/..</div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>FeatureLayer</title>
+
+<link rel="stylesheet" href="https://js.arcgis.com/3.20/esri/css/esri.css">
+<script src="https://js.arcgis.com/3.20/"></script>
+
+<style>
+html, body, #map {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+</style>
+
+<script>
+require([
+    "esri/map",
+    "esri/layers/FeatureLayer",
+    "dojo/domReady!"
+  ],
+  function(
+    Map,
+    FeatureLayer
+  ) {
+
+    var map = new Map("map", {
+      basemap: "streets",
+        zoom: 14,  // Sets the zoom level based on level of detail (LOD)
+        center: [-1.6182250, 53.8254300]  // Sets the center point of view in lon/lat
+    });
+
+    /****************************************************************
+     * Add feature layer - A FeatureLayer at minimum should point
+     * to a URL to a feature service or point to a feature collection 
+     * object.
+     ***************************************************************/
+
+    // Carbon storage of trees in Warren Wilson College.
+    var featureLayer = new FeatureLayer("http://gis2.leeds.gov.uk/arcgis/rest/services/Public/Polling/FeatureServer/1");
+        var featureLayer2 = new FeatureLayer("http://gis2.leeds.gov.uk/arcgis/rest/services/Public/Polling/FeatureServer/2");
+
+    map.addLayer(featureLayer);
+    map.addLayer(featureLayer2);
+
+  });
+</script>
+</head>
+
+<body>
+  <div id="map"></div>
+</body>
+
+</html>
