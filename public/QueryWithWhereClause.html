@@ -1,3 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Get started with MapView - Create a 2D map</title>
+<style>
+  #viewDiv {
+    padding: 0;
+    margin: 0;
+    height: 600px;
+    width: 800px;
+  }
+</style>
+<link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css">
+<script src="https://js.arcgis.com/4.3/"></script>
+</head>
+<body>
+  <div id="viewDiv">map goes here/..</div>
+  <button id="doBtn">Do Query</button>
+    <p><span id="printResults">Results</span></p>
+  <a href="https://developers.arcgis.com/javascript/latest/sample-code/sandbox/index.html?sample=tasks-query">ESRI Tutorial</a>
+  <script>
 require([
     "esri/Map",
     "esri/views/MapView",
@@ -15,18 +38,28 @@ require([
 
     // URL to feature service containing points 
     var pstnUrl = "http://gis2.leeds.gov.uk/arcgis/rest/services/Public/Polling/FeatureServer/2"
+    
+    var map = new Map({
+        basemap: "streets"
+    });
 
     // Create graphics layer and symbol to use for displaying the results of query    
     var resultsLyr = new GraphicsLayer();
 
+    var view = new MapView({
+        container: "viewDiv",  // Reference to the scene div created in step 5
+        map: map,  // Reference to the map object created before the scene
+        layers: [resultsLyr], // add graphics layer to the map
+        zoom: 17,  // Sets the zoom level based on level of detail (LOD)
+        center: [-1.6182250, 53.8254300]  // Sets the center point of view in lon/lat
+    });
+
     // Point QueryTask to URL of feature service
     var pstnTask = new QueryTask({ url: pstnUrl });
-
     var params = new Query({
         returnGeometry: true,
         outFields: ["*"]
     });
-
     params.where = "POLL_ST_NO = 238"
 
     function doQuery() {
@@ -38,27 +71,20 @@ require([
     }
 
     function getResults(response) {
-
         //resultsLyr.removeAll();
-
         // Loop through each of the results 
         var pollingStResults = arrayUtils.map(response.features, function (feature) {
-
             feature.symbol = new SimpleMarkerSymbol({
                 color: [226, 119, 40],
                 outline: { // autocasts as new SimpleLineSymbol()
                 color: [255, 255, 255],
                 width: 20}
             });
-
             return feature;
         });
 
-
         resultsLyr.addMany(pollingStResults);
-
-        console.log("graphics" + view.layers[0].graphics.length)
-
+        view.goTo(pollingStResults[0].geometry); // this should zoom in but it doesn't
         // print the number of results returned to the user
         dom.byId("printResults").innerHTML = pollingStResults.length + " results found!";
     }
@@ -67,18 +93,9 @@ require([
         console.error("Promise rejected: ", err.message);
     }
 
-    var map = new Map({
-        basemap: "streets"
-    });
-
-    var view = new MapView({
-        container: "viewDiv",  // Reference to the scene div created in step 5
-        map: map,  // Reference to the map object created before the scene
-        layers: [resultsLyr], // add graphics layer to the map
-        zoom: 14,  // Sets the zoom level based on level of detail (LOD)
-        center: [-1.6182250, 53.8254300]  // Sets the center point of view in lon/lat
-    });
-
     // Call doQuery() each time the button is clicked    
     on(dom.byId("doBtn"), "click", doQuery);
 });
+</script>
+</body>
+</html>

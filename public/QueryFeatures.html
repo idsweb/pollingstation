@@ -12,18 +12,21 @@
     require([
         "esri/Map",
         "esri/views/MapView",
+        "esri/tasks/QueryTask",
+        "esri/tasks/support/Query",
         "esri/layers/FeatureLayer",
+
 
         "dijit/a11yclick",
 
         "dojo/on",
         "dojo/dom",
-        "dojo/dom-attr",
+        "dojo/dom-attr", 
         "dojo/dom-construct",
         "dojo/domReady!"
       ],
       function(
-        Map, MapView,
+        Map, MapView, Query, QueryTask,
         FeatureLayer,
         a11yclick,
         on,
@@ -65,19 +68,16 @@
         view.whenLayerView(featureLayer).then(function(lyrView) {
           lyrView.watch("updating", function(val) {
             if (!val) { // wait for the layer view to finish updating
-
               // query all the features available for drawing.
               lyrView.queryFeatures().then(function(results) {
-
                 graphics = results;
-                
+                view.goTo(graphics[0].geometry)
               });
             }
           });
         });
 
         });
-
 
   </script>
 

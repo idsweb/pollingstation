@@ -30,7 +30,7 @@ require([
 
     var map = new Map("map", {
       basemap: "streets",
-        zoom: 14,  // Sets the zoom level based on level of detail (LOD)
+        zoom: 17,  // Sets the zoom level based on level of detail (LOD)
         center: [-1.6182250, 53.8254300]  // Sets the center point of view in lon/lat
     });
 
@@ -40,12 +40,9 @@ require([
      * object.
      ***************************************************************/
 
-    // Carbon storage of trees in Warren Wilson College.
-    var featureLayer = new FeatureLayer("http://gis2.leeds.gov.uk/arcgis/rest/services/Public/Polling/FeatureServer/1");
-        var featureLayer2 = new FeatureLayer("http://gis2.leeds.gov.uk/arcgis/rest/services/Public/Polling/FeatureServer/2");
+    var pollingStns = new FeatureLayer("http://gis2.leeds.gov.uk/arcgis/rest/services/Public/Polling/FeatureServer/2");
 
-    map.addLayer(featureLayer);
-    map.addLayer(featureLayer2);
+    map.addLayer(pollingStns);
 
   });
 </script>
@@ -56,3 +53,4 @@ require([
 </body>
 
 </html>
+
