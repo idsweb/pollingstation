@@ -21,11 +21,15 @@ html, body, #map {
 require([
     "esri/map",
     "esri/layers/FeatureLayer",
+    "esri/tasks/query", 
+    "esri/tasks/QueryTask",
     "dojo/domReady!"
   ],
   function(
     Map,
-    FeatureLayer
+    FeatureLayer,
+    Query,
+    QueryTask,
   ) {
 
     var map = new Map("map", {
@@ -43,6 +47,19 @@ require([
     var pollingStns = new FeatureLayer("http://gis2.leeds.gov.uk/arcgis/rest/services/Public/Polling/FeatureServer/2");
 
     map.addLayer(pollingStns);
+
+    var queryTask = new QueryTask("http://gis2.leeds.gov.uk/arcgis/rest/services/Public/Polling/FeatureServer/2")
+    
+    var query = new Query();
+    query.returnGeometry = false;
+    query.outFields = ['*'];
+
+    query.where = 'POLLING_ST_NO = 238' ;
+    queryTask.execute(query, showResults);
+
+    function showResults(results){
+      
+    }
 
   });
 </script>
