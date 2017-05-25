@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>AddressQuery_v42</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.3/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <script>
+    require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+        "esri/tasks/QueryTask",
+        "esri/tasks/support/Query",
+        "dojo/domReady!"
+      ],
+      function(
+        Map, 
+        MapView,
+        FeatureLayer,
+        QueryTask, 
+        Query
+      ) {
+
+        /**********************
+         * Create the map
+         * *******************/
+        var map = new Map({
+          basemap: "streets"
+        });
+
+        var view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 17,  // Sets the zoom level based on level of detail (LOD)
+          center: [-1.6184815999999955, 53.8306712]  // Sets the center point of view in lon/lat
+        });
+
+        /********************
+         * Add feature layer
+         ********************/
+        var featureLayer = new FeatureLayer({
+          url: "http://gis2.leeds.gov.uk/arcgis/rest/services/Public/Polling/FeatureServer/2"
+        });
+
+        map.add(featureLayer);
+
+         /********************
+         *Build up the QueryTask
+         ********************/
+        var queryTask = new QueryTask({
+            url: "http://gis2.leeds.gov.uk/arcgis/rest/services/Public/Polling/FeatureServer/2"
+        })
+
+        var query = new Query({
+            returnGeometry: true,
+            outFields: ["*"]
+        });
+
+        query.where = "POLL_ST_NO = '239'";
+
+        var mapCentre;
+
+        function getResults(response){
+            console.log(response.features[0].geometry);
+        };
+
+        // Called each time the promise is rejected    
+        function promiseRejected(err) {
+            console.error("Promise rejected: ", err.message);
+        }
+
+        queryTask.execute(query).then(getResults).otherwise(promiseRejected);
+      });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
